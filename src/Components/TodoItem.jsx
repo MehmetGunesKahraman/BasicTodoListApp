@@ -1,20 +1,24 @@
 import { useState } from "react";
 
 function TodoItem({ todo, onDelete, onToggle, onEdit }) {
+  // Local UI state for edit mode
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
 
+  // Save edits and exit edit mode
   const handleEdit = () => {
     if (editText.trim() === "") return;
     onEdit(todo.id, editText);
     setIsEditing(false);
   };
 
+  // Discard edits and reset input
   const handleCancel = () => {
     setEditText(todo.text);
     setIsEditing(false);
   };
 
+  // Edit mode UI
   if (isEditing) {
     return (
       <li className="flex items-center gap-2 bg-gradient-to-r from-indigo-50 to-purple-50 p-3 rounded-xl border-2 border-indigo-200 shadow-md">
@@ -41,6 +45,7 @@ function TodoItem({ todo, onDelete, onToggle, onEdit }) {
     );
   }
 
+  // Read-only display mode UI
   return (
     <li className="flex items-center justify-between bg-white hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 p-4 rounded-xl border border-gray-200 hover:border-indigo-300 shadow-sm hover:shadow-md transition-all duration-200">
       <span
