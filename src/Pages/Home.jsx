@@ -76,15 +76,21 @@ function Home() {
         </div>
 
         <ul className="space-y-2">
-          {todos.map((todo) => (
-            <TodoItem
-              key={todo.id}
-              todo={todo}
-              onDelete={deleteTodo}
-              onToggle={toggleTodo}
-              onEdit={editTodo}
-            />
-          ))}
+          {todos.length === 0 ? (
+            <li className="text-center py-8 text-gray-400 text-lg">
+              Listede hiçbir şey yok
+            </li>
+          ) : (
+            todos.map((todo) => (
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                onDelete={deleteTodo}
+                onToggle={toggleTodo}
+                onEdit={editTodo}
+              />
+            ))
+          )}
         </ul>
       </div>
     </div>
