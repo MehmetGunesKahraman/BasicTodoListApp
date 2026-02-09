@@ -20,17 +20,27 @@ function Home() {
   });
   // Input field state
   const [text, setText] = useState("");
+  // Popup state for add feedback
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   // Persist todos whenever they change
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
 
+  // Auto-hide popup after a short delay
+  useEffect(() => {
+    if (!isPopupVisible) return;
+    const timer = setTimeout(() => setIsPopupVisible(false), 2000);
+    return () => clearTimeout(timer);
+  }, [isPopupVisible]);
+
   // Add a new todo from the input text
   const addTodo = () => {
     if (text.trim() === "") return;
     setTodos([...todos, createTodo(text)]);
     setText("");
+    setIsPopupVisible(true);
   };
 
   // Remove a todo by id
@@ -63,7 +73,16 @@ function Home() {
   // Main UI
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex justify-center items-center p-4">
-      <div className="bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-full max-w-md border border-white/20">
+      <div className="relative bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-full max-w-md border border-white/20">
+        {isPopupVisible && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg"
+          >
+            Görev eklendi
+          </div>
+        )}
         <h1 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
           Todo App
         </h1>
