@@ -20,8 +20,12 @@ function Home() {
   });
   // Input field state
   const [text, setText] = useState("");
-  // Popup state for add feedback
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  // Popup state for feedback messages
+  const [popup, setPopup] = useState({
+    visible: false,
+    message: "",
+    tone: "success",
+  });
 
   // Persist todos whenever they change
   useEffect(() => {
@@ -30,22 +34,26 @@ function Home() {
 
   // Auto-hide popup after a short delay
   useEffect(() => {
-    if (!isPopupVisible) return;
-    const timer = setTimeout(() => setIsPopupVisible(false), 2000);
+    if (!popup.visible) return;
+    const timer = setTimeout(
+      () => setPopup((prev) => ({ ...prev, visible: false })),
+      2000
+    );
     return () => clearTimeout(timer);
-  }, [isPopupVisible]);
+  }, [popup.visible]);
 
   // Add a new todo from the input text
   const addTodo = () => {
     if (text.trim() === "") return;
     setTodos([...todos, createTodo(text)]);
     setText("");
-    setIsPopupVisible(true);
+    setPopup({ visible: true, message: "Görev eklendi", tone: "success" });
   };
 
   // Remove a todo by id
   const deleteTodo = (id) => {
     setTodos(todos.filter((todo) => todo.id !== id));
+    setPopup({ visible: true, message: "Görev silindi", tone: "danger" });
   };
 
   // Toggle completed state for a todo
@@ -68,19 +76,26 @@ function Home() {
           : todo
       )
     );
+    setPopup({ visible: true, message: "Görev güncellendi", tone: "info" });
   };
 
   // Main UI
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex justify-center items-center p-4">
       <div className="relative bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-2xl w-full max-w-md border border-white/20">
-        {isPopupVisible && (
+        {popup.visible && (
           <div
             role="status"
             aria-live="polite"
-            className="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg"
+            className={`absolute -top-4 left-1/2 -translate-x-1/2 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg ${
+              popup.tone === "danger"
+                ? "bg-rose-500"
+                : popup.tone === "info"
+                ? "bg-blue-500"
+                : "bg-emerald-500"
+            }`}
           >
-            Görev eklendi
+            {popup.message}
           </div>
         )}
         <h1 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
